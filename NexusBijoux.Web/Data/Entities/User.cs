@@ -5,7 +5,7 @@ namespace NexusBijoux.Web.Data.Entities
     public class User
     {
         [Key]
-        public int id { get; set; }
+        public int User_id { get; set; }
 
         [Display(Name = "Usuario")]
         [Required(ErrorMessage = "El campo '{0}' es requerido.")]
