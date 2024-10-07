@@ -1,15 +1,18 @@
 ﻿
 using NexusBijoux.web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
+using NexusBijoux.Web.Data.Entities;
 
 namespace NexusBijoux.web.Data
 {
     public class DataContext : DbContext
     {
-        public DataContextDbContextOptions<DataContext> options) : base(options)
+        public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
 
         }
-        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<User> Users { get; set; }//Agregar Tabla Usuarios
+        public DbSet<Permission> Permissions { get; set; } //Agregar Tabla Permisos
+        public DbSet<Product> Products { get; set; }//Agregar Tabla Productos
     }
 }
