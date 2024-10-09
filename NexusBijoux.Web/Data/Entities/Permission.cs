@@ -5,7 +5,7 @@ namespace NexusBijoux.web.Data.Entities
     public class Permission
     {
         [Key]
-        public int Id { get; set; }
+        public int Permission_ID { get; set; }
 
         [MaxLength(128, ErrorMessage = "El campo '{0}' debe tener como máximo '{1}' caracteres.")]
         [Required(ErrorMessage = "El campo '{0}' es requerido.")]

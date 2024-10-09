@@ -1,7 +1,6 @@
 ﻿
 using NexusBijoux.web.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using NexusBijoux.Web.Data.Entities;
 
 namespace NexusBijoux.web.Data
 {

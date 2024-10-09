@@ -13,7 +13,6 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 WebApplication app = builder.Build();
 
-
 if (!app.Environment.IsDevelopment())
 { 
     app.UseExceptionHandler("/Home/Error");

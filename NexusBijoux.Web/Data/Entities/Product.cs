@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NexusBijoux.Web.Data.Entities
+namespace NexusBijoux.web.Data.Entities
 {
     public class Product
     {

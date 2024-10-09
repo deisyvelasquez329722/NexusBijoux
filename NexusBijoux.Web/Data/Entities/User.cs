@@ -1,11 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace NexusBijoux.Web.Data.Entities
+namespace NexusBijoux.web.Data.Entities
 {
     public class User
     {
         [Key]
-        public int User_id { get; set; }
+        public int User_ID { get; set; }
 
         [Display(Name = "Usuario")]
         [Required(ErrorMessage = "El campo '{0}' es requerido.")]
