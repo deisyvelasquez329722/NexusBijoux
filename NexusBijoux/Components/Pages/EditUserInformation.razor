@@ -1,0 +1,106 @@
+﻿@page "/edituser"
+@using NexusBijoux.Components.Models
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar Usuario</PageTitle>
+
+<style>
+    .edit-form-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+    }
+
+    .edit-form {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-actions button {
+        flex: 1;
+        padding: 10px;
+    }
+</style>
+
+<div class="edit-form-container">
+    <h3>Editar Información del Usuario</h3>
+
+    <EditForm Model="userModel" class="edit-form" OnValidSubmit="HandleSave">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-group">
+            <label for="name" class="form-label">Nombre:</label>
+            <InputText @bind-Value="userModel.Name" id="name" placeholder="Introduce el nombre" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="alias" class="form-label">Alias:</label>
+            <InputText @bind-Value="userModel.Alias" id="alias" placeholder="Introduce el alias" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="form-label">Email:</label>
+            <InputText @bind-Value="userModel.Email" id="email" placeholder="Introduce el email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="role" class="form-label">Rol:</label>
+            <select @bind="userModel.Role" id="role" class="form-control">
+                <option value="Usuario">Usuario</option>
+                <option value="Administrador">Administrador</option>
+            </select>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <button type="button" class="btn btn-secondary" @onclick="HandleCancel">Cancelar</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private UserDTO userModel = new UserDTO();
+
+    private void HandleSave()
+    {
+        // Implement save functionality here
+        Console.WriteLine("Información guardada");
+    }
+
+    private void HandleCancel()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+}
