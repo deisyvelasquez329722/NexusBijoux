@@ -20,9 +20,7 @@
             </div>
             <button type="submit" class="btn btn-secondary btn-block mt-3">Iniciar Sesión</button>
         </EditForm>
-
-        <div>
-            <button type="button" class="btn btn-secondary btn-block mt-3" @onclick="RedirectToCreateAccount">Crear Cuenta</button>        </div>
+        
     </div>
 </form>
 
@@ -112,7 +110,7 @@
     
     private void RedirectToCreateAccount()
     {
-        Console.WriteLine("Redirigiendo a Counter");
+        Console.WriteLine("Redirigiendo a " + "/createaccount");
         NavigationManager.NavigateTo("/createaccount");
     }
 }

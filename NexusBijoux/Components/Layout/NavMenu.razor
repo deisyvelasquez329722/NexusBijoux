@@ -1,0 +1,98 @@
+﻿@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Routing
+@inject IJSRuntime JS
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">NexusBijoux</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        @if (isAuthenticated)
+        {
+            if (isAdmin)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="users-table">
+                        <span class="bi bi-people-fill-nav-menu" aria-hidden="true"></span> Users Table
+                    </NavLink>
+                </div>
+            }
+            else
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="purchase">
+                        <span class="bi bi-cart-fill-nav-menu" aria-hidden="true"></span> Purchase
+                    </NavLink>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="/">
+                    <span class="bi bi-box-arrow-in-right-nav-menu" aria-hidden="true"></span> Iniciar Sesión
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="createaccount">
+                    <span class="   bi bi-person-plus-fill-nav-menu" aria-hidden="true"></span> Crear Cuenta
+                </NavLink>
+            </div>
+        }
+    </nav>
+</div>
+
+@code {
+    /*private bool isAuthenticated;
+    private bool isAdmin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JS.InvokeAsync<string>("localStorage.getItem", "authToken");
+        isAuthenticated = !string.IsNullOrEmpty(token);
+
+        if (isAuthenticated)
+        {
+            var response = await Http.GetAsync("api/Account/IsAdmin");
+            isAdmin = response.IsSuccessStatusCode && await response.Content.ReadAsStringAsync() == "true";
+        }
+    }*/
+    private bool isAuthenticated = true; // Simula que el usuario está autenticado
+    private bool isAdmin = false; // Simula que el usuario es un administrador
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        CheckAuthentication();
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        CheckAuthentication();
+        StateHasChanged();
+    }
+
+    private void CheckAuthentication()
+    {
+        if (NavigationManager.Uri.Contains("/"))
+        {
+            isAuthenticated = false;
+        }
+        else
+        {
+            isAuthenticated = true;
+           // isAdmin = true; 
+        }
+    }
+    
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Components.Routing
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu/>
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            @if (!isLoginPage)
+            {
+                <button @onclick="Logout" class="btn btn-secondary">Cerrar Sesión</button>
+            }
+        </div>
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+
+<div id="blazor-error-ui">
+    Ha ocurrido un error no manejado.
+    <a href="" class="reload">Recargar</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    [Inject]
+    private HttpClient Http { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private bool isLoginPage;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.LocationChanged += OnLocationChanged;
+        CheckIfLoginPage();
+    }
+
+    private void OnLocationChanged(object sender, LocationChangedEventArgs e)
+    {
+        CheckIfLoginPage();
+        StateHasChanged();
+    }
+
+    private void CheckIfLoginPage()
+    {
+        isLoginPage = NavigationManager.Uri.Contains("/");
+    }
+
+    private async Task Logout()
+    {
+        var response = await Http.PostAsync("api/Account/Logout", null);
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            Console.WriteLine("Error al cerrar sesión.");
+        }
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}

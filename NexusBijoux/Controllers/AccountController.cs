@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NexusBijoux.Components.Models;
 
-[Route("[controller]")]
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
 public class AccountController : Controller
 {
     private readonly SignInManager<IdentityUser> _signInManager;
@@ -34,5 +37,40 @@ public class AccountController : Controller
     {
         await _signInManager.SignOutAsync();
         return Ok();
+    }
+    
+    [HttpGet("IsAdmin")]
+    public async Task<IActionResult> IsAdmin()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var isAdmin = await _userManager.IsInRoleAsync(user, "Admin");
+        return Ok(isAdmin);
+    }
+    
+    
+    [HttpPost("Register")]
+    public async Task<IActionResult> Register([FromBody] RegisterDTO model)
+    {
+        if (ModelState.IsValid)
+        {
+            var user = new IdentityUser
+            {
+                UserName = model.alias,
+                Email = model.Email
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return Ok();
+            }
+            return BadRequest(result.Errors);
+        }
+        return BadRequest(ModelState);
     }
 }

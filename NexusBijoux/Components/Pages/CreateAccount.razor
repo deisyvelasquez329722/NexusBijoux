@@ -1,0 +1,122 @@
+﻿@page "/createaccount"
+@using NexusBijoux.Components.Models
+
+<div class="register-container">
+    <h3>Crear Cuenta</h3>
+
+    <EditForm Model="registerModel" class="register-form" OnSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+        <ValidationSummary class="text-danger" />
+
+        <div class="form-group">
+            <label for="name" class="form-label">Nombre:</label>
+            <InputText @bind-Value="registerModel.Name" id="name" placeholder="Introduce tu nombre" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="lastName" class="form-label">Apellido:</label>
+            <InputText @bind-Value="registerModel.LastName" id="lastName" placeholder="Introduce tu apellido" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="alias" class="form-label">Alias:</label>
+            <InputText @bind-Value="registerModel.alias" id="alias" placeholder="Introduce tu alias" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="email" class="form-label">Email:</label>
+            <InputText @bind-Value="registerModel.Email" id="email" placeholder="Introduce tu email" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="password" class="form-label">Contraseña:</label>
+            <InputText @bind-Value="registerModel.Password" type="password" id="password" placeholder="Introduce tu contraseña" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword" class="form-label">Confirmar Contraseña:</label>
+            <InputText @bind-Value="registerModel.ConfirmPassword" type="password" id="confirmPassword" placeholder="Confirma tu contraseña" class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-secondary btn-block mt-3">Registrar</button>
+    </EditForm>
+</div>
+
+<style>
+    .register-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f7f7f7;
+    }
+
+    h3 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .register-form {
+        width: 100%;
+        max-width: 400px;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .btn-secondary:hover {
+        background-color: #0056b3;
+    }
+</style>
+
+@code {
+    private RegisterDTO registerModel = new RegisterDTO();
+
+    [Inject]
+    private HttpClient Http { get; set; }
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private async Task HandleRegister()
+    {
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/Account/Register", registerModel);
+            if (response.IsSuccessStatusCode)
+            {
+                NavigationManager.NavigateTo("/login");
+                Console.WriteLine("Registro exitoso");
+            }
+            else
+            {
+                Console.WriteLine($"Error en el registro. Código de estado: {response.StatusCode}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error durante el registro: {ex.Message}");
+        }
+    }
+}
