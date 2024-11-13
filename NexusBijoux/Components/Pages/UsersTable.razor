@@ -1,0 +1,75 @@
+﻿@page "/users"
+@using NexusBijoux.Components.Models
+@attribute [StreamRendering]
+
+<PageTitle>Usuarios</PageTitle>
+
+<style>
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .actions button {
+        flex: 1;
+        padding: 10px;
+    }
+</style>
+
+<h1>Usuario Registrados</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>NOMBRE</th>
+        <th>CORREO</th>
+        <th>ROL</th>
+        <th>ACCIONES</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in users)
+    {
+        <tr>
+            <td>@user.Name</td>
+            <td>@user.Email</td>
+            <td>
+                <select @onchange="(e) => ChangeRole(user, e.Value.ToString())">
+                    <option value="User" selected="@((user.Role == "Usuario") ? "selected" : null)">Usuario</option>
+                    <option value="Admin" selected="@((user.Role == "Administrador") ? "selected" : null)">Administrador</option>
+                </select>
+            </td>
+            <td>
+                <div class="actions">
+                    <button class="btn btn-primary" @onclick="() => EditUser(user)">Editar</button>
+                    <button class="btn btn-danger" @onclick="() => DeleteUser(user)">Eliminar</button>
+                </div>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private List<UserDTO> users = new List<UserDTO>
+    {
+        new UserDTO { Name = "John Doe", Email = "john@example.com", Role = "Usuario" },
+        new UserDTO { Name = "Jane Smith", Email = "jane@example.com", Role = "Administrador" }
+    };
+
+    private void ChangeRole(UserDTO userDto, string newRole)
+    {
+        userDto.Role = newRole;
+    }
+
+    private void EditUser(UserDTO userDto)
+    {
+        // Implement edit functionality here
+        Console.WriteLine($"Editing user: {userDto.Name}");
+    }
+
+    private void DeleteUser(UserDTO userDto)
+    {
+        users.Remove(userDto);
+    }
+}

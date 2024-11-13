@@ -1,0 +1,175 @@
+﻿@page "/compra"
+@using NexusBijoux.Components.Models
+@rendermode InteractiveServer
+
+<PageTitle>Compra</PageTitle>
+
+<style>
+    .purchase-container, .cart-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .item, .cart-item {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: white;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-image, .cart-item-image {
+        width: 150px;
+        height: auto;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: flex-end;
+        height: auto;
+    }
+
+    .form-actions button, .item button {
+        padding: 10px 20px;
+    }
+</style>
+
+<h1>Compra de Artículos</h1>
+
+<div class="purchase-container">
+    @foreach (var item in items)
+    {
+    <div class="item">
+        <img src="@item.ImageUrl" alt="@item.Name" class="item-image" />
+        <i class="bi bi-gem"></i> @item.Name - $@item.Price
+        <select @onchange="(e) => SelectItem(e, item)">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <button class="btn btn-primary" @onclick="() => AddToCart(item)">Añadir al Carro</button>
+    </div>
+    }
+</div>
+
+<h2>Carro</h2>
+<div class="cart-container">
+    @foreach (var cartItem in cartItems)
+    {
+    <div class="cart-item">
+        <img src="@cartItem.ImageUrl" alt="@cartItem.Name" class="cart-item-image" />
+        <i class="bi bi-gem"></i> @cartItem.Name - $@cartItem.Price x @cartItem.Quantity
+        <button class="btn btn-danger" @onclick="() => RemoveFromCart(cartItem)">Eliminar</button>
+    </div>
+    }
+</div>
+
+<p role="status">Total: $@totalPrice</p>
+
+<div class="form-actions">
+    <button class="btn btn-primary" @onclick="PlaceOrder" disabled="@(cartItems.Count == 0)">Realizar Pedido</button>
+    <button class="btn btn-secondary" @onclick="HandleCancel">Cancelar</button>
+</div>
+
+@if (orderPlaced)
+{
+    <p class="text-success">¡Pedido realizado con éxito!</p>
+}
+
+@code {
+    private int cartCount = 0;
+    private decimal totalPrice = 0;
+    private bool orderPlaced = false;
+
+    private List<ItemDTO> items = new List<ItemDTO>
+    {
+        new ItemDTO { Name = "cadena", Price = 100, ImageUrl = "images/cadenajpg.jpg" },
+        new ItemDTO { Name = "diamante", Price = 50, ImageUrl = "images/diamantes.jpg" },
+        new ItemDTO { Name = "anillo", Price = 75, ImageUrl = "images/joyeria.jpg" }
+    };
+
+    private List<CartItem> cartItems = new List<CartItem>();
+    private Timer timer;
+
+    private void AddToCart(ItemDTO item)
+    {
+        var cartItem = cartItems.FirstOrDefault(ci => ci.Name == item.Name);
+        if (cartItem == null)
+        {
+            cartItems.Add(new CartItem { Name = item.Name, Price = item.Price, ImageUrl = item.ImageUrl, Quantity = 1 });
+        }
+        else
+        {
+            cartItem.Quantity++;
+        }
+
+        cartCount++;
+        UpdateTotalPrice();
+    }
+
+    private void RemoveFromCart(CartItem cartItem)
+    {
+        cartItems.Remove(cartItem);
+        cartCount -= cartItem.Quantity;
+        UpdateTotalPrice();
+    }
+
+    private void SelectItem(ChangeEventArgs e, ItemDTO item)
+    {
+        if (int.TryParse(e.Value.ToString(), out int quantity))
+        {
+            Console.WriteLine($"Seleccionado {quantity} de {item.Name}");
+        }
+    }
+
+    private void UpdateTotalPrice()
+    {
+        totalPrice = cartItems.Sum(ci => ci.Price * ci.Quantity);
+    }
+
+    private void HandleCancel()
+    {
+        ClearCart();
+    }
+
+    private void PlaceOrder()
+    {
+        orderPlaced = true;
+        ClearCart();
+        StartTimer();
+    }
+
+    private void ClearCart()
+    {
+        cartItems.Clear();
+        cartCount = 0;
+        totalPrice = 0;
+    }
+
+    private void StartTimer()
+    {
+        timer = new Timer(HideOrderPlacedMessage, null, 5 * 1000, Timeout.Infinite);
+    }
+    
+    private void HideOrderPlacedMessage(object state)
+    {
+        orderPlaced = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+
+    private void HideOrderPlacedMessage()
+    {
+        orderPlaced = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private class CartItem : ItemDTO
+    {
+        public int Quantity { get; set; }
+    }
+
+}

@@ -1,0 +1,43 @@
+﻿@page "/purchase-information"
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Nombre del Cliente</th>
+        <th>Rol</th>
+        <th>Entregado</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var pedido in pedidos)
+    {
+        <tr>
+            <td>@pedido.Nombre</td>
+            <td>@pedido.Precio</td>
+            <td>@pedido.NombreCliente</td>
+            <td>@pedido.Rol</td>
+            <td>@(pedido.EstaEntregado ? "Sí" : "No")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@code {
+    private List<Pedido> pedidos = new List<Pedido>
+    {
+        new Pedido { Nombre = "cadena", Precio = 100, NombreCliente = "Luis", Rol = "Cliente", EstaEntregado = false },
+        new Pedido { Nombre = "diamante", Precio = 50, NombreCliente = "Maria", Rol = "Cliente", EstaEntregado = true },
+        new Pedido { Nombre = "anillo", Precio = 75, NombreCliente = "Juan", Rol = "Cliente", EstaEntregado = false }
+    };
+
+    public class Pedido
+    {
+        public string Nombre { get; set; }
+        public decimal Precio { get; set; }
+        public string NombreCliente { get; set; }
+        public string Rol { get; set; }
+        public bool EstaEntregado { get; set; }
+    }
+}
